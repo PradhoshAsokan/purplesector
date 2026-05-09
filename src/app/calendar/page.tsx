@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Session {
   date: string;
@@ -26,6 +26,30 @@ interface Race {
   Sprint?: Session;
   SprintQualifying?: Session;
 }
+
+const COUNTRY_TO_ISO: Record<string, string> = {
+  'Australia': 'au',
+  'China': 'cn',
+  'Japan': 'jp',
+  'USA': 'us',
+  'Canada': 'ca',
+  'Monaco': 'mc',
+  'Spain': 'es',
+  'Austria': 'at',
+  'UK': 'gb',
+  'Belgium': 'be',
+  'Hungary': 'hu',
+  'Netherlands': 'nl',
+  'Italy': 'it',
+  'Azerbaijan': 'az',
+  'Singapore': 'sg',
+  'Mexico': 'mx',
+  'Brazil': 'br',
+  'Qatar': 'qa',
+  'UAE': 'ae',
+  'Saudi Arabia': 'sa',
+  'Bahrain': 'bh'
+};
 
 const formatLocalTime = (dateStr: string, timeStr: string) => {
   const fullIso = `${dateStr}T${timeStr}`;
@@ -64,7 +88,6 @@ export default function CalendarPage() {
     fetchCalendar();
   }, []);
 
-  // Find next session and update countdown
   useEffect(() => {
     if (races.length === 0) return;
 
@@ -121,7 +144,6 @@ export default function CalendarPage() {
     <div className="p-8 min-h-screen bg-black">
       <h1 className="text-4xl font-bold text-[#FF1801] uppercase italic mb-8 tracking-tighter">Grand Prix Calendar</h1>
       
-      {/* Countdown Section */}
       <div className="border border-[#1F1F1F] bg-[#1F1F1F]/20 rounded-xl p-8 mb-12 text-center backdrop-blur-md relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-[#FF1801]/30">
            <div className="h-full bg-[#FF1801] animate-pulse" style={{ width: '40%' }}></div>
@@ -144,6 +166,7 @@ export default function CalendarPage() {
              const isExpanded = expandedRound === race.round;
              const raceDate = new Date(`${race.date}T${race.time}`);
              const isPast = raceDate < new Date();
+             const isoCode = COUNTRY_TO_ISO[race.Circuit.Location.country] || 'un';
 
              return (
               <div key={race.round} className={`border border-[#1F1F1F] rounded-lg overflow-hidden transition-all duration-300 ${isExpanded ? 'border-[#FF1801]/50 bg-[#1F1F1F]/30 shadow-2xl' : 'hover:border-white/20 bg-transparent'}`}>
@@ -152,34 +175,54 @@ export default function CalendarPage() {
                   className={`w-full text-left p-6 flex justify-between items-center group ${isPast ? 'opacity-40' : 'opacity-100'}`}
                 >
                   <div className="flex items-center gap-6">
-                    <span className="text-2xl font-black text-white/10 group-hover:text-[#FF1801]/20 transition-colors">
+                    {/* Readability Fix: Round numbers are now white */}
+                    <span className="text-2xl font-black text-white group-hover:text-[#FF1801] transition-colors w-8">
                       {race.round.padStart(2, '0')}
                     </span>
+                    
+                    {/* Flag Integration */}
+                    <img 
+                      src={`https://flagcdn.com/w40/${isoCode}.png`} 
+                      alt={race.Circuit.Location.country}
+                      className="w-8 h-auto shadow-lg border border-white/10"
+                    />
+
                     <div>
                       <h2 className={`text-2xl font-black italic uppercase transition-colors ${isExpanded ? 'text-[#FF1801]' : 'text-white group-hover:text-[#FF1801]'}`}>
                         {race.raceName}
                       </h2>
-                      <p className="text-[10px] uppercase tracking-widest text-white/40">{race.Circuit.Location.locality}, {race.Circuit.Location.country}</p>
+                      <p className="text-[10px] uppercase tracking-widest text-white/60 font-bold">
+                        {race.Circuit.circuitName} — <span className="text-white/30">{race.Circuit.Location.locality}</span>
+                      </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-white/80">{new Date(race.date).toLocaleDateString([], { month: 'short', day: 'numeric' })}</p>
+                    <p className="text-lg font-bold text-white/80 tabular-nums">{new Date(race.date).toLocaleDateString([], { month: 'short', day: 'numeric' })}</p>
                     <p className="text-[10px] text-[#FF1801] uppercase font-bold">{isPast ? 'COMPLETED' : 'UPCOMING'}</p>
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="px-12 pb-8 pt-2 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div className="space-y-4 border-r border-[#1F1F1F] pr-12">
+                  <div className="px-12 pb-8 pt-2 grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="space-y-4 border-r border-[#1F1F1F] pr-8">
                       <SessionRow label="Practice 1" session={race.FirstPractice} />
                       {race.SecondPractice && <SessionRow label="Practice 2" session={race.SecondPractice} />}
                       {race.SprintQualifying && <SessionRow label="Sprint Quali" session={race.SprintQualifying} />}
                     </div>
-                    <div className="space-y-4">
+                    <div className="space-y-4 border-r border-[#1F1F1F] pr-8">
                       {race.ThirdPractice && <SessionRow label="Practice 3" session={race.ThirdPractice} />}
                       {race.Sprint && <SessionRow label="Sprint Race" session={race.Sprint} />}
                       <SessionRow label="Qualifying" session={race.Qualifying} />
                       <SessionRow label="Main Race" session={{ date: race.date, time: race.time }} isGrandPrix />
+                    </div>
+                    {/* Mini Map Placeholder */}
+                    <div className="flex flex-col items-center justify-center bg-black/40 rounded-lg p-4 border border-white/5 group/map relative overflow-hidden h-32">
+                       <span className="text-[10px] font-bold text-white/10 uppercase italic tracking-widest group-hover/map:text-[#FF1801]/30 transition-colors">
+                          Circuit Layout
+                       </span>
+                       <div className="absolute inset-0 flex items-center justify-center opacity-5 group-hover/map:opacity-10 transition-opacity">
+                         <div className="w-16 h-16 border-2 border-dashed border-white rounded-full"></div>
+                       </div>
                     </div>
                   </div>
                 )}
@@ -197,7 +240,7 @@ function SessionRow({ label, session, isGrandPrix }: { label: string, session?: 
   return (
     <div className="flex justify-between items-center group/item">
       <span className={`text-[11px] uppercase tracking-widest font-bold ${isGrandPrix ? 'text-[#FF1801]' : 'text-white/40'}`}>{label}</span>
-      <span className="text-xs font-mono text-white/80 group-hover/item:text-[#FF1801] transition-colors">
+      <span className="text-xs font-mono text-white/80 group-hover/item:text-[#FF1801] transition-colors tabular-nums">
         {formatLocalTime(session.date, session.time)}
       </span>
     </div>
