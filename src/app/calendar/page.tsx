@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import CircuitMap from '@/components/CircuitMap';
 
 interface Session {
   date: string;
@@ -11,6 +12,7 @@ interface Race {
   round: string;
   raceName: string;
   Circuit: {
+    circuitId: string;
     circuitName: string;
     Location: {
       locality: string;
@@ -62,6 +64,18 @@ const formatLocalTime = (dateStr: string, timeStr: string) => {
     minute: '2-digit' 
   });
 };
+
+function SessionRow({ label, session, isGrandPrix }: { label: string, session?: Session, isGrandPrix?: boolean }) {
+  if (!session) return null;
+  return (
+    <div className="flex justify-between items-center group/item">
+      <span className={`text-[11px] uppercase tracking-widest font-bold ${isGrandPrix ? 'text-[#FF1801]' : 'text-white/40'}`}>{label}</span>
+      <span className="text-xs font-mono text-white/80 group-hover/item:text-[#FF1801] transition-colors tabular-nums">
+        {formatLocalTime(session.date, session.time)}
+      </span>
+    </div>
+  );
+}
 
 export default function CalendarPage() {
   const [races, setRaces] = useState<Race[]>([]);
@@ -141,17 +155,17 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="p-8 min-h-screen bg-black">
-      <h1 className="text-4xl font-bold text-[#FF1801] uppercase italic mb-8 tracking-tighter">Grand Prix Calendar</h1>
+    <div className="p-8 min-h-screen bg-black text-white font-mono">
+      <h1 className="text-4xl font-bold text-[#FF1801] uppercase italic mb-8 tracking-tighter text-center lg:text-left">Grand Prix Calendar</h1>
       
       <div className="border border-[#1F1F1F] bg-[#1F1F1F]/20 rounded-xl p-8 mb-12 text-center backdrop-blur-md relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-[#FF1801]/30">
            <div className="h-full bg-[#FF1801] animate-pulse" style={{ width: '40%' }}></div>
         </div>
-        <p className="text-7xl font-black tracking-tighter text-white mb-4 tabular-nums">
+        <p className="text-5xl md:text-7xl font-black tracking-tighter text-white mb-4 tabular-nums">
           {loading ? '00 : 00 : 00 : 00' : timeLeft || 'SEASON ENDED'}
         </p>
-        <p className="text-xs uppercase tracking-[0.4em] text-[#FF1801] font-bold">
+        <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-[#FF1801] font-bold">
           {loading ? 'CALCULATING NEXT SESSION...' : nextSessionInfo || 'STAY TUNED FOR 2027'}
         </p>
       </div>
@@ -172,57 +186,52 @@ export default function CalendarPage() {
               <div key={race.round} className={`border border-[#1F1F1F] rounded-lg overflow-hidden transition-all duration-300 ${isExpanded ? 'border-[#FF1801]/50 bg-[#1F1F1F]/30 shadow-2xl' : 'hover:border-white/20 bg-transparent'}`}>
                 <button 
                   onClick={() => toggleExpand(race.round)}
-                  className={`w-full text-left p-6 flex justify-between items-center group ${isPast ? 'opacity-40' : 'opacity-100'}`}
+                  className={`w-full text-left p-4 md:p-6 flex justify-between items-center group ${isPast ? 'opacity-40' : 'opacity-100'}`}
                 >
-                  <div className="flex items-center gap-6">
-                    {/* Readability Fix: Round numbers are now white */}
-                    <span className="text-2xl font-black text-white group-hover:text-[#FF1801] transition-colors w-8">
+                  <div className="flex items-center gap-4 md:gap-6">
+                    <span className="text-xl md:text-2xl font-black text-white group-hover:text-[#FF1801] transition-colors w-6 md:w-8">
                       {race.round.padStart(2, '0')}
                     </span>
-                    
-                    {/* Flag Integration */}
                     <img 
                       src={`https://flagcdn.com/w40/${isoCode}.png`} 
                       alt={race.Circuit.Location.country}
-                      className="w-8 h-auto shadow-lg border border-white/10"
+                      className="w-6 md:w-8 h-auto shadow-lg border border-white/10"
                     />
-
-                    <div>
-                      <h2 className={`text-2xl font-black italic uppercase transition-colors ${isExpanded ? 'text-[#FF1801]' : 'text-white group-hover:text-[#FF1801]'}`}>
+                    <div className="min-w-0">
+                      <h2 className={`text-lg md:text-2xl font-black italic uppercase transition-colors truncate ${isExpanded ? 'text-[#FF1801]' : 'text-white group-hover:text-[#FF1801]'}`}>
                         {race.raceName}
                       </h2>
-                      <p className="text-[10px] uppercase tracking-widest text-white/60 font-bold">
-                        {race.Circuit.circuitName} — <span className="text-white/30">{race.Circuit.Location.locality}</span>
+                      <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/60 font-bold truncate">
+                        {race.Circuit.circuitName}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-white/80 tabular-nums">{new Date(race.date).toLocaleDateString([], { month: 'short', day: 'numeric' })}</p>
-                    <p className="text-[10px] text-[#FF1801] uppercase font-bold">{isPast ? 'COMPLETED' : 'UPCOMING'}</p>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-sm md:text-lg font-bold text-white/80 tabular-nums">
+                      {new Date(race.date).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                    </p>
+                    <p className="text-[8px] md:text-[10px] text-[#FF1801] uppercase font-bold">{isPast ? 'COMPLETED' : 'UPCOMING'}</p>
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="px-12 pb-8 pt-2 grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div className="space-y-4 border-r border-[#1F1F1F] pr-8">
+                  <div className="px-6 md:px-12 pb-8 pt-2 grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="space-y-4 lg:border-r border-[#1F1F1F] lg:pr-8">
                       <SessionRow label="Practice 1" session={race.FirstPractice} />
                       {race.SecondPractice && <SessionRow label="Practice 2" session={race.SecondPractice} />}
                       {race.SprintQualifying && <SessionRow label="Sprint Quali" session={race.SprintQualifying} />}
                     </div>
-                    <div className="space-y-4 border-r border-[#1F1F1F] pr-8">
+                    <div className="space-y-4 lg:border-r border-[#1F1F1F] lg:pr-8">
                       {race.ThirdPractice && <SessionRow label="Practice 3" session={race.ThirdPractice} />}
                       {race.Sprint && <SessionRow label="Sprint Race" session={race.Sprint} />}
                       <SessionRow label="Qualifying" session={race.Qualifying} />
                       <SessionRow label="Main Race" session={{ date: race.date, time: race.time }} isGrandPrix />
                     </div>
-                    {/* Mini Map Placeholder */}
-                    <div className="flex flex-col items-center justify-center bg-black/40 rounded-lg p-4 border border-white/5 group/map relative overflow-hidden h-32">
-                       <span className="text-[10px] font-bold text-white/10 uppercase italic tracking-widest group-hover/map:text-[#FF1801]/30 transition-colors">
-                          Circuit Layout
+                    <div className="flex flex-col items-center justify-center bg-black/40 rounded-lg p-4 border border-white/5 group/map relative overflow-hidden h-40">
+                       <CircuitMap circuitId={race.Circuit.circuitId} className="w-full h-full" color="white" />
+                       <span className="text-[8px] font-bold text-white/20 uppercase italic tracking-widest mt-2">
+                          Circuit Configuration
                        </span>
-                       <div className="absolute inset-0 flex items-center justify-center opacity-5 group-hover/map:opacity-10 transition-opacity">
-                         <div className="w-16 h-16 border-2 border-dashed border-white rounded-full"></div>
-                       </div>
                     </div>
                   </div>
                 )}
@@ -231,18 +240,6 @@ export default function CalendarPage() {
           })}
         </div>
       )}
-    </div>
-  );
-}
-
-function SessionRow({ label, session, isGrandPrix }: { label: string, session?: Session, isGrandPrix?: boolean }) {
-  if (!session) return null;
-  return (
-    <div className="flex justify-between items-center group/item">
-      <span className={`text-[11px] uppercase tracking-widest font-bold ${isGrandPrix ? 'text-[#FF1801]' : 'text-white/40'}`}>{label}</span>
-      <span className="text-xs font-mono text-white/80 group-hover/item:text-[#FF1801] transition-colors tabular-nums">
-        {formatLocalTime(session.date, session.time)}
-      </span>
     </div>
   );
 }
