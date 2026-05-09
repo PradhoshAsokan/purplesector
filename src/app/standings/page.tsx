@@ -55,7 +55,7 @@ export default function StandingsPage() {
       setLoading(true);
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
-        const endpoint = view === 'drivers' ? '/test/standings' : '/test/constructors';
+        const endpoint = view === 'drivers' ? '/v1/standings' : '/v1/constructors';
         
         console.log(`Fetching ${view} from:`, `${apiUrl}${endpoint}`);
         const response = await fetch(`${apiUrl}${endpoint}`);

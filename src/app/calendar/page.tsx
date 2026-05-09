@@ -88,7 +88,7 @@ export default function CalendarPage() {
     async function fetchCalendar() {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
-        const response = await fetch(`${apiUrl}/test/calendar`);
+        const response = await fetch(`${apiUrl}/v1/calendar`);
         const result = await response.json();
         if (result.status === 'Success') {
           setRaces(result.data.MRData.RaceTable.Races);

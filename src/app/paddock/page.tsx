@@ -18,7 +18,7 @@ export default function PaddockPage() {
     async function fetchNews() {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
-        const response = await fetch(`${apiUrl}/test/news`);
+        const response = await fetch(`${apiUrl}/v1/news`);
         const result = await response.json();
         
         if (result.status === 'Success') {
