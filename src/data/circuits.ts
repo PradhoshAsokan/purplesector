@@ -1,0 +1,27 @@
+// Mapping of Jolpica Circuit IDs to the specific SVG filename in /public/tracks/
+export const CIRCUIT_MAP_FILES: Record<string, string> = {
+  'albert_park': 'melbourne-2.svg',
+  'villeneuve': 'montreal-6.svg',
+  'monaco': 'monaco-6.svg',
+  'shanghai': 'shanghai-1.svg',
+  'suzuka': 'suzuka-2.svg',
+  'miami': 'miami-1.svg',
+  'catalunya': 'catalunya-6.svg',
+  'red_bull_ring': 'spielberg-3.svg',
+  'silverstone': 'silverstone-8.svg',
+  'spa': 'spa-francorchamps-4.svg',
+  'hungaroring': 'hungaroring-3.svg',
+  'zandvoort': 'zandvoort-5.svg',
+  'monza': 'monza-7.svg',
+  'baku': 'baku-1.svg',
+  'marina_bay': 'marina-bay-4.svg',
+  'americas': 'austin-1.svg',
+  'rodriguez': 'mexico-city-3.svg',
+  'interlagos': 'interlagos-2.svg',
+  'vegas': 'las-vegas-1.svg',
+  'losail': 'lusail-1.svg',
+  'yas_marina': 'yas-marina-2.svg',
+  'madring': 'madring-1.svg',
+  'jeddah': 'jeddah-1.svg',
+  'bahrain': 'bahrain-3.svg'
+};
