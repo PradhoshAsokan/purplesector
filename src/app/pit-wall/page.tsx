@@ -26,10 +26,12 @@ interface LeaderboardEntry {
 }
 
 interface SessionResult {
-  position: number;
+  position: number | null;
   driver_number: number;
   points: number;
-  status: string;
+  dnf: boolean;
+  dns: boolean;
+  dsq: boolean;
 }
 
 interface CarTelemetry {
@@ -123,7 +125,7 @@ export default function PitWallPage() {
     async function fetchSummary(apiUrl: string) {
        setLoading(true);
        try {
-         const response = await fetch(`${apiUrl}/test/session_results`);
+         const response = await fetch(`${apiUrl}/v1/session_results`);
          const data = await response.json();
          if (data.status === 'Success' && Array.isArray(data.data)) {
            const sorted = data.data.sort((a: any, b: any) => {
@@ -141,17 +143,17 @@ export default function PitWallPage() {
 
     async function fetchLive(apiUrl: string) {
       // 1. Race Control
-      fetch(`${apiUrl}/test/race-control`).then(r => r.json()).then(data => {
+      fetch(`${apiUrl}/v1/race-control`).then(r => r.json()).then(data => {
         if (data.status === 'Success' && Array.isArray(data.data)) setMessages(data.data.slice(-50).reverse());
       });
 
       // 2. Weather
-      fetch(`${apiUrl}/test/weather`).then(r => r.json()).then(data => {
+      fetch(`${apiUrl}/v1/weather`).then(r => r.json()).then(data => {
         if (data.status === 'Success' && Array.isArray(data.data) && data.data.length > 0) setWeather(data.data[data.data.length - 1]);
       });
 
       // 3. Telemetry
-      fetch(`${apiUrl}/test/car_data`).then(r => r.json()).then(telData => {
+      fetch(`${apiUrl}/v1/car_data`).then(r => r.json()).then(telData => {
         if (telData.status === 'Success' && Array.isArray(telData.data)) {
           const telMap: Record<number, CarTelemetry> = {};
           telData.data.forEach((t: CarTelemetry) => { telMap[t.driver_number] = t; });
@@ -161,8 +163,8 @@ export default function PitWallPage() {
 
       // 4. Advanced Timing
       Promise.all([
-        fetch(`${apiUrl}/test/positions`).then(r => r.json()),
-        fetch(`${apiUrl}/test/telemetry`).then(r => r.json())
+        fetch(`${apiUrl}/v1/positions`).then(r => r.json()),
+        fetch(`${apiUrl}/v1/telemetry`).then(r => r.json())
       ]).then(([posRes, intRes]) => {
         if (posRes.status === 'Success' && intRes.status === 'Success' && Array.isArray(posRes.data) && Array.isArray(intRes.data)) {
            const posMap = new Map();
@@ -187,9 +189,9 @@ export default function PitWallPage() {
       });
 
       // 5. Radio / Stints / Pits
-      fetch(`${apiUrl}/test/radio`).then(r => r.json()).then(data => { if (data.status === 'Success' && Array.isArray(data.data)) setRadio(data.data.slice(-8).reverse()); });
-      fetch(`${apiUrl}/test/stints`).then(r => r.json()).then(data => { if (data.status === 'Success' && Array.isArray(data.data)) { const latestMap = new Map(); data.data.forEach((s: any) => latestMap.set(s.driver_number, s)); setStints(Array.from(latestMap.values())); } });
-      fetch(`${apiUrl}/test/pits`).then(r => r.json()).then(data => { if (data.status === 'Success' && Array.isArray(data.data)) setPits(data.data.slice(-5).reverse()); });
+      fetch(`${apiUrl}/v1/radio`).then(r => r.json()).then(data => { if (data.status === 'Success' && Array.isArray(data.data)) setRadio(data.data.slice(-8).reverse()); });
+      fetch(`${apiUrl}/v1/stints`).then(r => r.json()).then(data => { if (data.status === 'Success' && Array.isArray(data.data)) { const latestMap = new Map(); data.data.forEach((s: any) => latestMap.set(s.driver_number, s)); setStints(Array.from(latestMap.values())); } });
+      fetch(`${apiUrl}/v1/pits`).then(r => r.json()).then(data => { if (data.status === 'Success' && Array.isArray(data.data)) setPits(data.data.slice(-5).reverse()); });
     }
 
     checkSessionAndFetch();
