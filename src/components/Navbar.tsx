@@ -15,9 +15,9 @@ const Navbar = () => {
           <Link href="/standings" className="hover:text-f1-red transition-colors cursor-pointer">Standings</Link>
         </div>
         
-        <div className="text-xs font-mono text-f1-red animate-pulse">
+        {/* <div className="text-xs font-mono text-f1-red animate-pulse">
           ● LIVE DATA
-        </div>
+        </div> */}
       </div>
     </nav>
   );
