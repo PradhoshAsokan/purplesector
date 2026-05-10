@@ -94,7 +94,11 @@ export default function PitWallPage() {
     let interval: NodeJS.Timeout;
 
     async function checkSessionAndFetch() {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        console.error("API URL not configured");
+        return;
+      }
       try {
         const sessionRes = await fetch("https://api.openf1.org/v1/sessions?session_key=latest");
         const sessionData = await sessionRes.json();

@@ -54,7 +54,11 @@ export default function StandingsPage() {
     async function fetchData() {
       setLoading(true);
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        if (!apiUrl) {
+          setError("API configuration missing");
+          return;
+        }
         const endpoint = view === 'drivers' ? '/v1/standings' : '/v1/constructors';
         
         console.log(`Fetching ${view} from:`, `${apiUrl}${endpoint}`);

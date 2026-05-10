@@ -87,7 +87,11 @@ export default function CalendarPage() {
   useEffect(() => {
     async function fetchCalendar() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        if (!apiUrl) {
+          setLoading(false);
+          return;
+        }
         const response = await fetch(`${apiUrl}/v1/calendar`);
         const result = await response.json();
         if (result.status === 'Success') {

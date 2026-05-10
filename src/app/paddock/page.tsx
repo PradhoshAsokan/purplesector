@@ -17,7 +17,11 @@ export default function PaddockPage() {
   useEffect(() => {
     async function fetchNews() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        if (!apiUrl) {
+          setError("API configuration missing");
+          return;
+        }
         const response = await fetch(`${apiUrl}/v1/news`);
         const result = await response.json();
         
