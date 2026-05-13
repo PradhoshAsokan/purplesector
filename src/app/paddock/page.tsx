@@ -41,15 +41,15 @@ export default function PaddockPage() {
   }, []);
 
   return (
-    <div className="p-8 min-h-screen bg-black">
-      <h1 className="text-4xl font-bold text-[#FF1801] uppercase italic mb-8 tracking-tighter">The Paddock</h1>
+    <div className="p-8 min-h-screen bg-asphalt">
+      <h1 className="text-4xl font-black text-f1-red uppercase italic mb-8 tracking-tighter">The Paddock</h1>
       
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF1801]"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-f1-red"></div>
         </div>
       ) : error ? (
-        <div className="p-8 border border-red-500/50 bg-red-500/10 rounded text-center text-red-500">
+        <div className="p-8 border border-red-500/50 bg-red-500/10 rounded text-center text-red-500 font-mono text-xs uppercase tracking-widest">
           {error}
         </div>
       ) : (
@@ -60,10 +60,10 @@ export default function PaddockPage() {
               href={item.link} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="group border border-[#1F1F1F] bg-[#1F1F1F]/30 rounded-xl flex flex-col overflow-hidden hover:border-[#FF1801]/50 hover:bg-[#1F1F1F]/50 transition-all shadow-2xl h-full min-h-[400px]"
+              className="group border border-white/5 bg-carbon rounded-xl flex flex-col overflow-hidden hover:border-f1-red/50 hover:bg-steel/30 transition-all shadow-2xl h-full min-h-[400px]"
             >
               {/* News Image */}
-              <div className="relative h-48 w-full bg-carbon-grey overflow-hidden">
+              <div className="relative h-48 w-full bg-steel overflow-hidden">
                 {item.image ? (
                   <img 
                     src={item.image} 
@@ -71,23 +71,23 @@ export default function PaddockPage() {
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-[#1F1F1F]">
-                    <span className="text-[#FF1801] font-black italic opacity-20 text-4xl uppercase tracking-tighter">Purple Sector</span>
+                  <div className="w-full h-full flex items-center justify-center bg-carbon">
+                    <span className="text-f1-red font-black italic opacity-20 text-4xl uppercase tracking-tighter">Purple Sector</span>
                   </div>
                 )}
-                <div className="absolute top-0 left-0 w-full h-1 bg-[#FF1801] transition-all group-hover:h-2"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-f1-red transition-all group-hover:h-2"></div>
               </div>
 
               {/* News Content */}
               <div className="p-6 flex flex-col justify-between flex-grow">
                 <div>
-                  <h2 className="text-xl font-bold text-white mb-4 italic uppercase leading-tight group-hover:text-[#FF1801] transition-colors line-clamp-3">
+                  <h2 className="text-xl font-black text-smoke-white mb-4 italic uppercase leading-tight group-hover:text-f1-red transition-colors line-clamp-3">
                     {item.title}
                   </h2>
                 </div>
                 <div className="flex justify-between items-center text-[10px] font-mono mt-auto pt-4 border-t border-white/5">
-                  <span className="text-white/40 uppercase tracking-widest">{item.date}</span>
-                  <span className="text-[#FF1801] font-bold group-hover:translate-x-1 transition-transform">READ ARTICLE →</span>
+                  <span className="text-silver/40 uppercase tracking-widest font-bold">{item.date}</span>
+                  <span className="text-f1-red font-black group-hover:translate-x-1 transition-transform uppercase tracking-tighter">Read Article →</span>
                 </div>
               </div>
             </a>
@@ -95,7 +95,7 @@ export default function PaddockPage() {
         </div>
       )}
       
-      <div className="mt-8 text-[10px] text-white/20 uppercase tracking-[0.5em] text-center">
+      <div className="mt-8 text-[10px] text-silver/20 uppercase tracking-[0.5em] text-center font-bold">
         Real-time F1 News Aggregator
       </div>
     </div>
