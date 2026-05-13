@@ -2,19 +2,26 @@
 
 @theme {
   --color-f1-red: #FF1801;
+  --color-wine-red: #720917;
+  --color-purple-sector: #B15EFF;
+  --color-asphalt: #0D0D0E;
+  --color-carbon: #161618;
+  --color-steel: #232326;
+  --color-smoke-white: #F5F5F7;
+  --color-silver: #A1A1AA;
+  
+  /* Retaining original for backward compatibility during transition */
   --color-carbon-grey: #1F1F1F;
-  --color-background: #000000;
-  --color-foreground: #FFFFFF;
 }
 
 :root {
-  --background: #000000;
-  --foreground: #FFFFFF;
+  --background: #0D0D0E;
+  --foreground: #F5F5F7;
 }
 
 body {
-  background-color: black;
-  color: white;
+  background-color: var(--color-asphalt);
+  color: var(--color-smoke-white);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   margin: 0;
   padding: 0;
